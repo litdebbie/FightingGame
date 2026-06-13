@@ -1,6 +1,6 @@
-import { Hiei } from './hiei.js';
-import { Yusuke } from './yusuke.js';
-import { Stage } from './stage.js';
+import { Hiei } from './entities/fighters/Hiei.js';
+import { Yusuke } from './entities/fighters/Yusuke.js';
+import { Stage } from './entities/Stage.js';
 
 const GameViewport = {
     WIDTH: 384,
