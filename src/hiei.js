@@ -1,18 +1,9 @@
-const hiei = document.querySelector('img[alt="hiei"]');
+import { Fighter } from './fighter.js';
 
-const position = {
-    x: 80,
-    y: 130,
-};
+export class Hiei extends Fighter {
+    constructor(x, y, velocity) {
+        super('Hiei', x, y, velocity);
 
-let velocity = 1;
-
-export function updateHiei(c) {
-    position.x += velocity;    // update character's x position
-
-    if(position.x > c.canvas.width - hiei.width || position.x < 0) velocity = -velocity;     // ensure character does not go off screen
-}
-
-export function drawHiei(c) {
-    c.drawImage(hiei, position.x, position.y);    // draw character on screen
+        this.image = document.querySelector('img[alt="hiei"]');
+    }
 }

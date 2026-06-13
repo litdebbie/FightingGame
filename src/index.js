@@ -1,6 +1,6 @@
-import { drawHiei, updateHiei } from './hiei.js';
-import { drawBackground } from './stage.js';
-import { drawYusuke, updateYusuke} from './yusuke.js'
+import { Hiei } from './hiei.js';
+import { Yusuke } from './yusuke.js';
+import { Stage } from './stage.js';
 
 const GameViewport = {
     WIDTH: 384,
@@ -15,13 +15,19 @@ window.onload = function() {
     canvas.width = GameViewport.WIDTH;
     canvas.height = GameViewport.HEIGHT;
 
-    function frame() {
-        updateHiei(c);
-        updateYusuke(c);
+    const hiei = new Hiei(80, 130, 1);
+    const yusuke = new Yusuke(80, 130, -1);
+    const stage = new Stage();
 
-        drawBackground(c);
-        drawHiei(c);
-        drawYusuke(c);
+    function frame() {
+        // update the characters' state on screen
+        hiei.update(c);
+        yusuke.update(c);
+
+        // draw characters and background on screen
+        stage.draw(c);
+        hiei.draw(c);
+        yusuke.draw(c);
 
         window.requestAnimationFrame(frame);    // "animate" character
     }
