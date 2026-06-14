@@ -4,15 +4,20 @@ export class Fighter {
         this.image = new Image();
         this.position = { x, y };
         this.velocity = velocity;
+        this.frame = [];
     }
 
     update(secondsPassed, c) {
+        const [, , width] = this.frame;
+
         this.position.x += this.velocity * secondsPassed;    // update character's x position
 
-        if(this.position.x > c.canvas.width - this.image.width || this.position.x < 0) this.velocity = -this.velocity;     // ensure character does not go off screen
+        if(this.position.x > c.canvas.width - width || this.position.x < 0) this.velocity = -this.velocity;     // ensure character does not go off screen
     }
 
     draw(c) {
-        c.drawImage(this.image, this.position.x, this.position.y);    // draw character on screen
+        const [x, y, width, height] = this.frame;
+
+        c.drawImage(this.image, x, y, width, height, this.position.x, this.position.y, width, height);    // draw character on screen
     }
 }
