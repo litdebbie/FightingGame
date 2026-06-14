@@ -6,8 +6,8 @@ export class Fighter {
         this.velocity = velocity;
     }
 
-    update(c) {
-        this.position.x += this.velocity;    // update character's x position
+    update(secondsPassed, c) {
+        this.position.x += this.velocity * secondsPassed;    // update character's x position
 
         if(this.position.x > c.canvas.width - this.image.width || this.position.x < 0) this.velocity = -this.velocity;     // ensure character does not go off screen
     }

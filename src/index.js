@@ -1,13 +1,14 @@
 import { Hiei } from './entities/fighters/Hiei.js';
 import { Yusuke } from './entities/fighters/Yusuke.js';
 import { Stage } from './entities/Stage.js';
+import { FpsCounter } from './entities/FpsCounter.js';
 
 const GameViewport = {
     WIDTH: 384,
     HEIGHT: 224,
 };
 
-window.onload = function() {
+window.addEventListener('load',function() {
     const canvas = document.querySelector('canvas');
     const c = canvas.getContext('2d');
 
@@ -15,22 +16,35 @@ window.onload = function() {
     canvas.width = GameViewport.WIDTH;
     canvas.height = GameViewport.HEIGHT;
 
-    const hiei = new Hiei(80, 130, 1);
-    const yusuke = new Yusuke(80, 130, -1);
-    const stage = new Stage();
+    // declare Fight object(s) and Stage object
+    const entities = [
+        new Stage(),
+        new Hiei(80, 130, 100),
+        new Yusuke(150, 130, -100),
+        new FpsCounter(),
+    ];
 
-    function frame() {
+    // keep track of time
+    let previousTime = 0;
+    let secondsPassed = 0;
+
+    function frame(time) {
+        window.requestAnimationFrame(frame);    // request frame from browser
+
+        // update time keeper
+        secondsPassed = Math.min((time - previousTime) / 1000, 0.1);
+        previousTime = time;
+
         // update the characters' state on screen
-        hiei.update(c);
-        yusuke.update(c);
+        for (const entity of entities) {
+            entity.update(secondsPassed, c);
+        }
 
         // draw characters and background on screen
-        stage.draw(c);
-        hiei.draw(c);
-        yusuke.draw(c);
-
-        window.requestAnimationFrame(frame);    // "animate" character
+        for (const entity of entities) {
+            entity.draw(c);
+        }
     }
 
     window.requestAnimationFrame(frame);
-}
+});
