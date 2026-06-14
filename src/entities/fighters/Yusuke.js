@@ -10,7 +10,8 @@ export class Yusuke extends Fighter {
             ['forward-1', [2, 4, 58, 83]],
             ['forward-2', [62, 6, 59, 81]],
             ['forward-3', [123, 3, 55, 84]],
-            ['forward-4', [180, 2, 43, 85]],
+            ['forward-4', [180, 2, 55, 85]],
+            ['forward-5', [123, 3, 55, 84]],
         ]);
     }
 }

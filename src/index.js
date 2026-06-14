@@ -24,20 +24,25 @@ window.addEventListener('load',function() {
         new FpsCounter(),
     ];
 
-    // keep track of time
-    let previousTime = 0;
-    let secondsPassed = 0;
+    // keep track of time to update characters
+    let frameTime = {
+        previous: 0,
+        secondsPassed: 0,
+    };
 
     function frame(time) {
         window.requestAnimationFrame(frame);    // request frame from browser
 
         // update time keeper
-        secondsPassed = Math.min((time - previousTime) / 1000, 0.1);
-        previousTime = time;
+        frameTime = {
+            secondsPassed: Math.min((time - frameTime.previous) / 1000, 0.1),
+            // secondsPassed: (time - frameTime.previous) / 1000,
+            previous: time,
+        }
 
         // update the characters' state on screen
         for (const entity of entities) {
-            entity.update(secondsPassed, c);
+            entity.update(frameTime, c);
         }
 
         // draw characters and background on screen
