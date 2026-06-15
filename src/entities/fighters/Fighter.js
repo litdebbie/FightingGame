@@ -27,7 +27,7 @@ export class Fighter {
 
         this.position.x += this.velocity * time.secondsPassed;    // update character's x position
 
-        if(this.position.x > c.canvas.width - width || this.position.x < 0) this.velocity = -this.velocity;     // ensure character does not go off screen
+        if(this.position.x > c.canvas.width - width / 2 || this.position.x < width / 2) this.velocity = -this.velocity;     // ensure character does not go off screen
     }
 
     drawDebug(c) {
