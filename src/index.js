@@ -3,6 +3,7 @@ import { Yusuke } from './entities/fighters/Yusuke.js';
 import { Stage } from './entities/Stage.js';
 import { FpsCounter } from './entities/FpsCounter.js';
 import { STAGE_FLOOR } from './constants/stage.js';
+import { FIGHTER_DIRECTION } from './constants/fighters.js';
 
 const GameViewport = {
     WIDTH: 384,
@@ -20,8 +21,8 @@ window.addEventListener('load',function() {
     // declare Fight object(s) and Stage object
     const entities = [
         new Stage(),
-        new Hiei(80, STAGE_FLOOR, 100),
-        new Yusuke(150, STAGE_FLOOR, -100),
+        new Hiei(70, STAGE_FLOOR, FIGHTER_DIRECTION.RIGHT),
+        new Yusuke(280, STAGE_FLOOR, FIGHTER_DIRECTION.LEFT),
         new FpsCounter(),
     ];
 
