@@ -5,18 +5,10 @@ import { FpsCounter } from './entities/FpsCounter.js';
 import { STAGE_FLOOR } from './constants/stage.js';
 import { FIGHTER_DIRECTION } from './constants/fighters.js';
 
-const GameViewport = {
-    WIDTH: 384,
-    HEIGHT: 224,
-};
-
 window.addEventListener('load',function() {
     const canvas = document.querySelector('canvas');
     const c = canvas.getContext('2d');
-
-    // set canvas width and height
-    canvas.width = GameViewport.WIDTH;
-    canvas.height = GameViewport.HEIGHT;
+    c.imageSmoothingEnabled = false;    // make images look sharp and pixelated
 
     // declare Fight object(s) and Stage object
     const entities = [

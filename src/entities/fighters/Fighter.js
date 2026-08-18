@@ -62,10 +62,10 @@ export class Fighter {
         // creates cross to locate where origin point is
         c.beginPath();
         c.strokeStyle = 'blue';
-        c.moveTo(this.position.x - 5, this.position.y);
-        c.lineTo(this.position.x + 4, this.position.y);
-        c.moveTo(this.position.x, this.position.y - 5);
-        c.lineTo(this.position.x, this.position.y + 4);
+        c.moveTo(Math.floor(this.position.x) - 4.5, Math.floor(this.position.y));
+        c.lineTo(Math.floor(this.position.x) + 4.5, Math.floor(this.position.y));
+        c.moveTo(Math.floor(this.position.x), Math.floor(this.position.y) - 4.5);
+        c.lineTo(Math.floor(this.position.x), Math.floor(this.position.y) + 4.5);
         c.stroke();
     }
 
@@ -82,7 +82,7 @@ export class Fighter {
             this.image,
             x, y, 
             width, height, 
-            this.position.x * this.direction - originX, this.position.y - originY, 
+            Math.floor(this.position.x * this.direction) - originX, Math.floor(this.position.y) - originY, 
             width, height
         );
 
