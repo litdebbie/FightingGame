@@ -31,6 +31,9 @@ export class Hiei extends Fighter {
             ['backward-5', [[183, 91, 44, 79], [23, 74]]],
             ['backward-6', [[183, 91, 44, 79], [23, 74]]],
             ['backward-7', [[139, 92, 42, 78], [21, 72]]],
+
+            // JUMP UP
+            ['jump-up-1', [[103, 6, 48, 80], [24, 68]]],
         ]);
 
         // define Hiei's animations
@@ -38,6 +41,15 @@ export class Hiei extends Fighter {
             [FIGHTER_STATE.IDLE]: ['idle-1', 'idle-1', 'idle-2', 'idle-2', 'idle-3', 'idle-3', 'idle-2'],
             [FIGHTER_STATE.WALK_FORWARD]: ['forward-1', 'forward-2', 'forward-3', 'forward-4', 'forward-5', 'forward-6', 'forward-7'],
             [FIGHTER_STATE.WALK_BACKWARD]: ['backward-1', 'backward-2', 'backward-3', 'backward-4', 'backward-5', 'backward-6', 'backward-7'],
+            [FIGHTER_STATE.JUMP_UP]: ['jump-up-1'],
         };
+
+        // set initial velocity -> negative velocity means "move upward" 
+        // canvas y coordinates increase downward
+        this.initialVelocity = {
+            jump: -420,
+        };
+
+        this.gravity = 1000;    // set gravity
     }
 }

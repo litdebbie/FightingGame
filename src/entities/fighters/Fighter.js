@@ -1,16 +1,21 @@
 import { FIGHTER_DIRECTION, FIGHTER_STATE } from '../../constants/fighters.js';
+import { STAGE_FLOOR } from '../../constants/stage.js'
 
 export class Fighter {
     constructor(name, x, y, direction) {
         this.name = name;           // name of character
-        this.image = new Image();   // image of character
-        this.frames = new Map();    // character animation frames
         this.position = { x, y };   // character position
+        this.velocity = { x: 0, y: 0 }; // character velocity
+        this.initialVelocity ={}        // character initial velocity
         this.direction = direction;    // direction of character (which way they're facing)
-        this.velocity = 0;    // character velocity
+        this.gravity = 0;           // gravity
+
+        this.frames = new Map();    // character animation frames
         this.animationFrame = 0;    // index value for which animation frame to display
         this.animationTimer = 0;    // animation timer -> stores the timestamp when the animation from was last changed
         this.animations = {};       // holds all of the animation frames for a specific action/move
+
+        this.image = new Image();   // image of character
 
         // create fighter state machine
         // each state has:
@@ -28,6 +33,10 @@ export class Fighter {
             [FIGHTER_STATE.WALK_BACKWARD]: {
                 init: this.handleWalkBackwardInit.bind(this),
                 update: this.handleWalkBackwardState.bind(this),
+            },
+            [FIGHTER_STATE.JUMP_UP]: {
+                init: this.handleJumpUpInit.bind(this),
+                update: this.handleJumpUpState.bind(this),
             },
         }
 
@@ -48,7 +57,8 @@ export class Fighter {
 
     // called once when fighter enters IDLE state
     handleIdleInit() {
-        this.velocity = 0;
+        this.velocity.x = 0;
+        this.velocity.y = 0;
     }
 
     // called every frame while the fighter is idle
@@ -62,7 +72,7 @@ export class Fighter {
 
     // called once when fighter enters WALK_FORWARD state
     handleWalkForwardInit() {
-        this.velocity = 100 * this.direction;
+        this.velocity.x = 100 * this.direction;
     }
 
     // called every frame while the fighter is walking forward
@@ -76,12 +86,32 @@ export class Fighter {
 
     // called once when fighter enters WALK_BACKWARD state
     handleWalkBackwardInit() {
-        this.velocity = -100 * this.direction;
+        this.velocity.x = -100 * this.direction;
     }
 
     // called every frame while the fighter is walking backward
     handleWalkBackwardState() {
         
+    }
+
+    // ---------------------------------------------------
+    // JUMP UP STATE
+    // ---------------------------------------------------
+
+    // called once when fighter enters JUMP_UP state
+    handleJumpUpInit() {
+        this.velocity.y = this.initialVelocity.jump;    // give fighter an initial upward velocity
+    }
+
+    // called every frame while the fighter is jumping up
+    handleJumpUpState(time) {
+        this.velocity.y += this.gravity * time.secondsPassed;   // apply gravity -> fighter comes back down after jump
+
+        // check if the fighter has fallen below the floor
+        if(this.position.y > STAGE_FLOOR) {
+            this.position.y = STAGE_FLOOR;  // put the fighter back to the floor position
+            this.changeState(FIGHTER_STATE.IDLE);   // jump finished -> set fighter to idle state
+        }
     }
 
     // constrains characters to the limits of the stage
@@ -101,19 +131,23 @@ export class Fighter {
         }
     }
 
-    update(time, c) {
+    updateAnimation(time) {
         // check if the game time value is greater than our local animationTimer value + 80ms delay
         // check if at least 80 ms have passed since the animation frame was changed
         if(time.previous > this.animationTimer + 80) {
             this.animationTimer = time.previous;    // update aminationTimer, preparing for the next animation frame
 
             this.animationFrame++;  // increment animationFrame index -> go to next animation frame
-            if(this.animationFrame > 6) this.animationFrame = 0;    // reset animationFrame index --> results in loop
+            if(this.animationFrame >= this.animations[this.currentState].length) this.animationFrame = 0;    // reset animationFrame index --> results in loop
         }
+    }
 
-        this.position.x += this.velocity * time.secondsPassed;    // update character's x position
+    update(time, c) {
+        this.position.x += this.velocity.x * time.secondsPassed;    // update character's x position
+        this.position.y += this.velocity.y * time.secondsPassed;    // update character's y position
 
         this.states[this.currentState].update(time, c);     // execute the fighter's current state and execute that state's update function i.e. handle____State(time, c)
+        this.updateAnimation(time);
         this.updateStageConstraints(c);     // make sure fighters stay within stage limits
     }
 

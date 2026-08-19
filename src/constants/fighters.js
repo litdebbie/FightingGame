@@ -7,4 +7,5 @@ export const FIGHTER_STATE = {
     IDLE: 'idle',
     WALK_FORWARD: 'walkForwards',
     WALK_BACKWARD: 'walkBackwards',
+    JUMP_UP: 'jumpUp',
 };
