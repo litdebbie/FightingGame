@@ -1,3 +1,4 @@
+import { FIGHTER_STATE } from '../../constants/fighters.js';
 import { Fighter } from './Fighter.js';
 
 export class Hiei extends Fighter {
@@ -27,8 +28,8 @@ export class Hiei extends Fighter {
         ]);
 
         this.animations = {
-            'walkForwards': ['forward-1', 'forward-2', 'forward-3', 'forward-4', 'forward-5', 'forward-6', 'forward-7'],
-            'walkBackwards': ['backward-1', 'backward-2', 'backward-3', 'backward-4', 'backward-5', 'backward-6', 'backward-7'],
+            [FIGHTER_STATE.WALK_FORWARD]: ['forward-1', 'forward-2', 'forward-3', 'forward-4', 'forward-5', 'forward-6', 'forward-7'],
+            [FIGHTER_STATE.WALK_BACKWARD]: ['backward-1', 'backward-2', 'backward-3', 'backward-4', 'backward-5', 'backward-6', 'backward-7'],
         };
     }
 }

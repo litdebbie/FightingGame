@@ -1,4 +1,4 @@
-import { FIGHTER_DIRECTION } from '../../constants/fighters.js';
+import { FIGHTER_DIRECTION, FIGHTER_STATE } from '../../constants/fighters.js';
 
 export class Fighter {
     constructor(name, x, y, direction) {
@@ -7,30 +7,66 @@ export class Fighter {
         this.frames = new Map();    // character animation frames
         this.position = { x, y };   // character position
         this.direction = direction;    // direction of character (which way they're facing)
-        this.velocity = 100 * direction;    // character velocity
+        this.velocity = 0;    // character velocity
         this.animationFrame = 0;    // index value for which animation frame to display
         this.animationTimer = 0;    // animation timer
         this.animations = {};       // holds all of the animation frames for a specific action/move
-        this.state = this.changeState();    // start character in the 'forwards' state
+
+        this.states = {
+            [FIGHTER_STATE.WALK_FORWARD]: {
+                init: this.handleWalkForwardInit.bind(this),
+                update: this.handleWalkForwardState.bind(this),
+            },
+            [FIGHTER_STATE.WALK_BACKWARD]: {
+                init: this.handleWalkBackwardInit.bind(this),
+                update: this.handleWalkBackwardState.bind(this),
+            },
+        }
+
+        this.changeState(FIGHTER_STATE.WALK_BACKWARD);   // set initial state of character
     }
 
-    // changeState = () => this.velocity * this.direction < 0 ? 'walkBackwards' : 'walkForwards';
-    changeState() {
-        // velocity & direction are opposite signs -> product is negative
-        // character moves in the opposite direction it's facing
-        if(this.velocity * this.direction < 0) return 'walkBackwards';  
+    changeState(newState) {
+        this.currentState = newState;   // update currentState
+        this.animationFrame = 0;        // reset animation frame
 
-        // velocity & direction are the same sign -> product is 0 or positive
-        // character moves in the same direction it's facing   
-        return 'walkForwards';
+        this.states[this.currentState].init();  // call new state's init function so it can be initialized prior to being executed 
+    }
+
+    handleWalkForwardInit() {
+        this.velocity = 100 * this.direction;
+    }
+
+    handleWalkForwardState() {
+
+    }
+
+    handleWalkBackwardInit() {
+        this.velocity = -100 * this.direction;
+    }
+
+    handleWalkBackwardState() {
+        
+    }
+
+    // constrains characters to the limits of the stage
+    updateStageConstraints(c) {
+        const WIDTH = 32;
+
+        // when character hits the right side of the screen, correctly change the animation 
+        // based on the character's direction & velocity
+        if(this.position.x > c.canvas.width - WIDTH){
+            this.position.x = c.canvas.width - WIDTH;   
+        } 
+
+        // when character hits the left side of the screen, correctly change the animation 
+        // based on the character's direction & velocity
+        if (this.position.x < WIDTH) {
+            this.position.x = WIDTH;
+        }
     }
 
     update(time, c) {
-        const [
-            [x, y, width, height], 
-            [originX, originY],
-        ] = this.frames.get(this.animations[this.state][this.animationFrame]);
-
         // check if the game time value is greater than our local animationTimer value + 60ms delay
         if(time.previous > this.animationTimer + 80) {
             this.animationTimer = time.previous;    // update aminationTimer, preparing for the next animation frame
@@ -41,19 +77,8 @@ export class Fighter {
 
         this.position.x += this.velocity * time.secondsPassed;    // update character's x position
 
-        // when character hits the right side of the screen, correctly change the animation 
-        // based on the character's direction & velocity
-        if(this.position.x > c.canvas.width - width / 2){
-            this.velocity = -100; 
-            this.state = this.changeState();   
-        } 
-
-        // when character hits the left side of the screen, correctly change the animation 
-        // based on the character's direction & velocity
-        if (this.position.x < width / 2) {
-            this.velocity = 100;
-            this.state = this.changeState();
-        }
+        this.states[this.currentState].update(time, c);     // execute the state
+        this.updateStageConstraints(c);
     }
 
     drawDebug(c) {
@@ -73,7 +98,7 @@ export class Fighter {
         const [
             [x, y, width, height], 
             [originX, originY],
-        ] = this.frames.get(this.animations[this.state][this.animationFrame]);
+        ] = this.frames.get(this.animations[this.currentState][this.animationFrame]);
 
         c.scale(this.direction, 1);     // apply transformation (scaling transform)
 
