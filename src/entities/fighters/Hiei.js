@@ -2,12 +2,18 @@ import { FIGHTER_STATE } from '../../constants/fighters.js';
 import { Fighter } from './Fighter.js';
 
 export class Hiei extends Fighter {
-    constructor(x, y, velocity) {
-        super('Hiei', x, y, velocity);  // call parent class constructor
+    constructor(x, y, direction) {
+        super('Hiei', x, y, direction);  // call parent class constructor
 
-        this.image = document.querySelector('img[alt="hiei"]');
+        this.image = document.querySelector('img[alt="hiei"]');     // set image to the Hiei sprite sheet
 
+        // a frame takes the form ['name of frame', [[x, y, width, height], [originX, originY]]]
         this.frames = new Map([
+            // IDLE
+            ['idle-1', [[1, 91, 45, 79], [21, 72]]],
+            ['idle-2', [[48, 89, 43, 81], [20, 74]]],
+            ['idle-3', [[93, 93, 44, 77], [21, 70]]],
+
             // move FORWARDS
             ['forward-1', [[1, 91, 45, 79], [21, 72]]],
             ['forward-2', [[48, 89, 43, 81], [20, 74]]],
@@ -27,7 +33,9 @@ export class Hiei extends Fighter {
             ['backward-7', [[139, 92, 42, 78], [21, 72]]],
         ]);
 
+        // define Hiei's animations
         this.animations = {
+            [FIGHTER_STATE.IDLE]: ['idle-1', 'idle-1', 'idle-2', 'idle-2', 'idle-3', 'idle-3', 'idle-2'],
             [FIGHTER_STATE.WALK_FORWARD]: ['forward-1', 'forward-2', 'forward-3', 'forward-4', 'forward-5', 'forward-6', 'forward-7'],
             [FIGHTER_STATE.WALK_BACKWARD]: ['backward-1', 'backward-2', 'backward-3', 'backward-4', 'backward-5', 'backward-6', 'backward-7'],
         };
