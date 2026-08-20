@@ -132,13 +132,16 @@ export class Fighter {
     }
 
     updateAnimation(time) {
+        const animation = this.animations[this.currentState];
+        const [, frameDelay] = animation[this.animationFrame];
+
         // check if the game time value is greater than our local animationTimer value + 80ms delay
         // check if at least 80 ms have passed since the animation frame was changed
-        if(time.previous > this.animationTimer + 80) {
+        if(time.previous > this.animationTimer + frameDelay) {
             this.animationTimer = time.previous;    // update aminationTimer, preparing for the next animation frame
 
-            this.animationFrame++;  // increment animationFrame index -> go to next animation frame
-            if(this.animationFrame >= this.animations[this.currentState].length) this.animationFrame = 0;    // reset animationFrame index --> results in loop
+            if(frameDelay > 0) this.animationFrame++;  // increment animationFrame index -> go to next animation frame
+            if(this.animationFrame >= animation.length) this.animationFrame = 0;    // reset animationFrame index --> results in loop
         }
     }
 
@@ -171,6 +174,8 @@ export class Fighter {
 
     // draw the fighter's current animation frame
     draw(c) {
+        const [frameKey] = this.animations[this.currentState][this.animationFrame];
+
         // get the current sprite frame
         // this.animations[this.currentState] -> gets the animation associated with the current fighter state
         // [this.animationFrame] -> gets the specific frame we are currently displaying
@@ -178,7 +183,7 @@ export class Fighter {
         const [
             [x, y, width, height], 
             [originX, originY],
-        ] = this.frames.get(this.animations[this.currentState][this.animationFrame]);
+        ] = this.frames.get(frameKey);
 
         c.scale(this.direction, 1);     // apply transformation (scaling transform) -> flip canvas horizontally if needed
 
