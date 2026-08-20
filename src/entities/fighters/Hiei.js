@@ -32,6 +32,15 @@ export class Hiei extends Fighter {
             ['jump-up-1', [[200, 22, 42, 64], [21, 58]]],   // [1,5]
             ['jump-up-2', [[103, 6, 48, 80], [24, 68]]],    // [1,3]
             ['jump-up-3', [[56, 12, 45, 63], [24, 55]]],    // [1,2]
+
+            // JUMP FORWARD/BACKWARD
+            ['jump-roll-1', [[200, 22, 42, 64], [21, 58]]],   // [1,5]
+            ['jump-roll-2', [[103, 6, 48, 80], [24, 68]]],    // [1,3]
+            ['jump-roll-3', [[56, 12, 45, 63], [24, 55]]],    // [1,2]
+            ['jump-roll-4', [[188, 583, 48, 28], [20, 9]]],   // [8,5]
+            ['jump-roll-5', [[541, 521, 50, 30], [27, 23]]],  // [7,10]
+            ['jump-roll-6', [[152, 15, 45, 51], [24, 7]]],    // [1,4]
+            ['jump-roll-7', [[1, 20, 53, 43], [25, 25]]],     // [1,1]
         ]);
 
         // define Hiei's animations
@@ -55,12 +64,28 @@ export class Hiei extends Fighter {
                 ['jump-up-1', 85], ['jump-up-2', 200], ['jump-up-3', 180], 
                 ['jump-up-3', 180], ['jump-up-2', -1],
             ],
+            [FIGHTER_STATE.JUMP_FORWARD]: [
+                ['jump-roll-1', 200], ['jump-roll-2', 100], ['jump-roll-3', 100], 
+                ['jump-roll-4', 100], ['jump-roll-6', 100], ['jump-roll-7', 100],
+                ['jump-roll-7', -1],
+            ],
+            [FIGHTER_STATE.JUMP_BACKWARD]: [
+                ['jump-roll-1', 200], ['jump-roll-2', 100], ['jump-roll-3', 100], 
+                ['jump-roll-5', 100], ['jump-roll-6', 100], ['jump-roll-7', 100],
+                ['jump-roll-7', -1],
+            ],
         };
 
         // set initial velocity -> negative velocity means "move upward" 
         // canvas y coordinates increase downward
         this.initialVelocity = {
-            jump: -420,
+            x: {
+                [FIGHTER_STATE.WALK_FORWARD]: 100,
+                [FIGHTER_STATE.WALK_BACKWARD]: -100,
+                [FIGHTER_STATE.JUMP_FORWARD]: 100,
+                [FIGHTER_STATE.JUMP_BACKWARD]: -100,
+            },
+            jump: -450,
         };
 
         this.gravity = 1000;    // set gravity

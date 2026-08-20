@@ -27,16 +27,24 @@ export class Fighter {
                 update: this.handleIdleState.bind(this),
             },
             [FIGHTER_STATE.WALK_FORWARD]: {
-                init: this.handleWalkForwardInit.bind(this),
-                update: this.handleWalkForwardState.bind(this),
+                init: this.handleMoveInit.bind(this),
+                update: this.handleMoveState.bind(this),
             },
             [FIGHTER_STATE.WALK_BACKWARD]: {
-                init: this.handleWalkBackwardInit.bind(this),
-                update: this.handleWalkBackwardState.bind(this),
+                init: this.handleMoveInit.bind(this),
+                update: this.handleMoveState.bind(this),
             },
             [FIGHTER_STATE.JUMP_UP]: {
-                init: this.handleJumpUpInit.bind(this),
-                update: this.handleJumpUpState.bind(this),
+                init: this.handleJumpInit.bind(this),
+                update: this.handleJumpState.bind(this),
+            },
+            [FIGHTER_STATE.JUMP_FORWARD]: {
+                init: this.handleJumpInit.bind(this),
+                update: this.handleJumpState.bind(this),
+            },
+            [FIGHTER_STATE.JUMP_BACKWARD]: {
+                init: this.handleJumpInit.bind(this),
+                update: this.handleJumpState.bind(this),
             },
         }
 
@@ -67,44 +75,31 @@ export class Fighter {
     }
 
     // ---------------------------------------------------
-    // WALK FORWARD STATE
+    // MOVE STATE
     // ---------------------------------------------------
 
-    // called once when fighter enters WALK_FORWARD state
-    handleWalkForwardInit() {
-        this.velocity.x = 100 * this.direction;
+    // called once when fighter enters MOVE state
+    handleMoveInit() {
+        this.velocity.x = this.initialVelocity.x[this.currentState] ?? 0;
     }
 
-    // called every frame while the fighter is walking forward
-    handleWalkForwardState() {
+    // called every frame while the fighter is moving
+    handleMoveState() {
 
-    }
-
-    // ---------------------------------------------------
-    // WALK BACKWARD STATE
-    // ---------------------------------------------------
-
-    // called once when fighter enters WALK_BACKWARD state
-    handleWalkBackwardInit() {
-        this.velocity.x = -100 * this.direction;
-    }
-
-    // called every frame while the fighter is walking backward
-    handleWalkBackwardState() {
-        
     }
 
     // ---------------------------------------------------
-    // JUMP UP STATE
+    // JUMP STATE
     // ---------------------------------------------------
 
-    // called once when fighter enters JUMP_UP state
-    handleJumpUpInit() {
+    // called once when fighter enters JUMP state
+    handleJumpInit() {
         this.velocity.y = this.initialVelocity.jump;    // give fighter an initial upward velocity
+        this.handleMoveInit();
     }
 
-    // called every frame while the fighter is jumping up
-    handleJumpUpState(time) {
+    // called every frame while the fighter is jumping 
+    handleJumpState(time) {
         this.velocity.y += this.gravity * time.secondsPassed;   // apply gravity -> fighter comes back down after jump
 
         // check if the fighter has fallen below the floor
@@ -146,7 +141,7 @@ export class Fighter {
     }
 
     update(time, c) {
-        this.position.x += this.velocity.x * time.secondsPassed;    // update character's x position
+        this.position.x += (this.velocity.x * this.direction) * time.secondsPassed;    // update character's x position
         this.position.y += this.velocity.y * time.secondsPassed;    // update character's y position
 
         this.states[this.currentState].update(time, c);     // execute the fighter's current state and execute that state's update function i.e. handle____State(time, c)
