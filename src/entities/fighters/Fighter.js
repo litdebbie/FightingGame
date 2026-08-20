@@ -21,30 +21,41 @@ export class Fighter {
         // each state has:
         //      init() -> called once when entering the state
         //      update() -> called every frame while in the state
+        //      validFrom -> contains valid states from which the state can be transitioned from
         this.states = {
             [FIGHTER_STATE.IDLE]: {
                 init: this.handleIdleInit.bind(this),
                 update: this.handleIdleState.bind(this),
+                validFrom: [
+                    undefined,
+                    FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_FORWARD, FIGHTER_STATE.WALK_BACKWARD, 
+                    FIGHTER_STATE.JUMP_UP, FIGHTER_STATE.JUMP_FORWARD, FIGHTER_STATE.JUMP_BACKWARD
+                ],
             },
             [FIGHTER_STATE.WALK_FORWARD]: {
                 init: this.handleMoveInit.bind(this),
                 update: this.handleMoveState.bind(this),
+                validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_BACKWARD],
             },
             [FIGHTER_STATE.WALK_BACKWARD]: {
                 init: this.handleMoveInit.bind(this),
                 update: this.handleMoveState.bind(this),
+                validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_FORWARD],
             },
             [FIGHTER_STATE.JUMP_UP]: {
                 init: this.handleJumpInit.bind(this),
                 update: this.handleJumpState.bind(this),
+                validFrom: [FIGHTER_STATE.IDLE],
             },
             [FIGHTER_STATE.JUMP_FORWARD]: {
                 init: this.handleJumpInit.bind(this),
                 update: this.handleJumpState.bind(this),
+                validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_FORWARD],
             },
             [FIGHTER_STATE.JUMP_BACKWARD]: {
                 init: this.handleJumpInit.bind(this),
                 update: this.handleJumpState.bind(this),
+                validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_BACKWARD],
             },
         }
 
@@ -53,6 +64,10 @@ export class Fighter {
 
     // change the fighter's current state
     changeState(newState) {
+        // check if the new state is the same as the current state -> if the same, do nothing
+        // check if the new state is in the array validFrom -> if new state is NOT in validFrom, do nothing
+        if(newState === this.currentState || !this.states[newState].validFrom.includes(this.currentState)) return;
+        
         this.currentState = newState;   // update currentState
         this.animationFrame = 0;        // reset animation frame to frame 0
 
@@ -145,7 +160,7 @@ export class Fighter {
         this.position.y += this.velocity.y * time.secondsPassed;    // update character's y position
 
         this.states[this.currentState].update(time, c);     // execute the fighter's current state and execute that state's update function i.e. handle____State(time, c)
-        this.updateAnimation(time);
+        this.updateAnimation(time);         // update the animation
         this.updateStageConstraints(c);     // make sure fighters stay within stage limits
     }
 
