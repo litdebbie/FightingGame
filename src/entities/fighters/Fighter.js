@@ -1,4 +1,4 @@
-import { FIGHTER_DIRECTION, FIGHTER_STATE } from '../../constants/fighters.js';
+import { FIGHTER_STATE } from '../../constants/fighters.js';
 import { STAGE_FLOOR } from '../../constants/stage.js'
 
 export class Fighter {
@@ -25,21 +25,22 @@ export class Fighter {
         this.states = {
             [FIGHTER_STATE.IDLE]: {
                 init: this.handleIdleInit.bind(this),
-                update: this.handleIdleState.bind(this),
+                update: () => { },
                 validFrom: [
                     undefined,
                     FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_FORWARD, FIGHTER_STATE.WALK_BACKWARD, 
-                    FIGHTER_STATE.JUMP_UP, FIGHTER_STATE.JUMP_FORWARD, FIGHTER_STATE.JUMP_BACKWARD
+                    FIGHTER_STATE.JUMP_UP, FIGHTER_STATE.JUMP_FORWARD, FIGHTER_STATE.JUMP_BACKWARD,
+                    FIGHTER_STATE.CROUCH_UP,
                 ],
             },
             [FIGHTER_STATE.WALK_FORWARD]: {
                 init: this.handleMoveInit.bind(this),
-                update: this.handleMoveState.bind(this),
+                update: () => { },
                 validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_BACKWARD],
             },
             [FIGHTER_STATE.WALK_BACKWARD]: {
                 init: this.handleMoveInit.bind(this),
-                update: this.handleMoveState.bind(this),
+                update: () => { },
                 validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_FORWARD],
             },
             [FIGHTER_STATE.JUMP_UP]: {
@@ -56,6 +57,21 @@ export class Fighter {
                 init: this.handleJumpInit.bind(this),
                 update: this.handleJumpState.bind(this),
                 validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_BACKWARD],
+            },
+            [FIGHTER_STATE.CROUCH]: {
+                init: () => { },
+                update: () => { },
+                validFrom: [FIGHTER_STATE.CROUCH_DOWN],
+            },
+            [FIGHTER_STATE.CROUCH_DOWN]: {
+                init: () => { },
+                update: this.handleCrouchDownState.bind(this),
+                validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_FORWARD, FIGHTER_STATE.WALK_BACKWARD],
+            },
+            [FIGHTER_STATE.CROUCH_UP]: {
+                init: () => { },
+                update: this.handleCrouchUpState.bind(this),
+                validFrom: [FIGHTER_STATE.CROUCH],
             },
         }
 
@@ -84,17 +100,14 @@ export class Fighter {
         this.velocity.y = 0;
     }
 
-    // called every frame while the fighter is idle
-    handleIdleState() {
-
-    }
-
     // ---------------------------------------------------
-    // MOVE STATE
+    // WALKING STATES
     // ---------------------------------------------------
 
-    // called once when fighter enters MOVE state
+    // called once when fighter enters either WALK_FORWARD or WALK_BACKWARD states
     handleMoveInit() {
+        // set the horizontal velocity for the current state
+        // if no velocity has been configured, horizontal velocity is 0
         this.velocity.x = this.initialVelocity.x[this.currentState] ?? 0;
     }
 
@@ -104,10 +117,10 @@ export class Fighter {
     }
 
     // ---------------------------------------------------
-    // JUMP STATE
+    // JUMPING STATES
     // ---------------------------------------------------
 
-    // called once when fighter enters JUMP state
+    // called once when fighter enters either JUMP_UP, JUMP_FORWARD, or JUMP_BACKWARD states
     handleJumpInit() {
         this.velocity.y = this.initialVelocity.jump;    // give fighter an initial upward velocity
         this.handleMoveInit();
@@ -122,6 +135,22 @@ export class Fighter {
             this.position.y = STAGE_FLOOR;  // put the fighter back to the floor position
             this.changeState(FIGHTER_STATE.IDLE);   // jump finished -> set fighter to idle state
         }
+    }
+
+    // ---------------------------------------------------
+    // CROUCHING STATES
+    // ---------------------------------------------------
+
+    handleCrouchDownState() {
+        // once the animation has reached its final frame (frameDelay = -2)
+        // transition state: CROUCH_DOWN -> CROUCH
+        if(this.animations[this.currentState][this.animationFrame][1] === -2) this.changeState(FIGHTER_STATE.CROUCH);
+    }
+
+    handleCrouchUpState() {
+        // once the animation has reached its final frame (frameDelay = -2)
+        // transition state: CROUCH_UP -> IDLE
+        if(this.animations[this.currentState][this.animationFrame][1] === -2) this.changeState(FIGHTER_STATE.IDLE);
     }
 
     // constrains characters to the limits of the stage

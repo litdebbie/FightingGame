@@ -41,9 +41,19 @@ export class Hiei extends Fighter {
             ['jump-roll-5', [[541, 521, 50, 30], [27, 23]]],  // [7,10]
             ['jump-roll-6', [[152, 15, 45, 51], [24, 7]]],    // [1,4]
             ['jump-roll-7', [[1, 20, 53, 43], [25, 25]]],     // [1,1]
+
+            // CROUCH
+            ['crouch-1', [[1, 91, 45, 79], [21, 72]]],     // [2,1]
+            ['crouch-2', [[374, 106, 42, 64], [22, 57]]],  // [2,9]
+            ['crouch-3', [[326, 114, 46, 56], [25, 49]]],  // [2,8]
         ]);
 
         // define Hiei's animations
+        // takes the form:
+        // ['name of state']: [
+        //      ['name of frame', frameDelay], ..., 
+        //      ['name of frame', frameDelay],
+        // ]
         this.animations = {
             [FIGHTER_STATE.IDLE]: [
                 ['idle-1', 85], ['idle-1', 85], ['idle-2', 85], 
@@ -67,12 +77,19 @@ export class Hiei extends Fighter {
             [FIGHTER_STATE.JUMP_FORWARD]: [
                 ['jump-roll-1', 200], ['jump-roll-2', 100], ['jump-roll-3', 100], 
                 ['jump-roll-4', 100], ['jump-roll-6', 100], ['jump-roll-7', 100],
-                ['jump-roll-7', -1],
+                ['jump-roll-7', 0],
             ],
             [FIGHTER_STATE.JUMP_BACKWARD]: [
                 ['jump-roll-1', 200], ['jump-roll-2', 100], ['jump-roll-3', 100], 
                 ['jump-roll-5', 100], ['jump-roll-6', 100], ['jump-roll-7', 100],
-                ['jump-roll-7', -1],
+                ['jump-roll-7', 0],
+            ],
+            [FIGHTER_STATE.CROUCH]: [['crouch-3', 0]],
+            [FIGHTER_STATE.CROUCH_DOWN]: [
+                ['crouch-1', 50], ['crouch-2', 50], ['crouch-3', 50], ['crouch-3', -2],
+            ],
+            [FIGHTER_STATE.CROUCH_UP]: [
+                ['crouch-3', 50], ['crouch-2', 50], ['crouch-1', 50], ['crouch-1', -2],
             ],
         };
 

@@ -40,9 +40,19 @@ export class Yusuke extends Fighter {
             ['jump-roll-6', [[451, 11, 45, 76], [29, 46]]],   // [1,8]
             ['jump-roll-7', [[273, 38, 69, 49], [40, 23]]],   // [1,5]
             ['jump-roll-8', [[549, 28, 49, 59], [21, 53]]],   // [1,10]
+
+            // CROUCH
+            ['crouch-1', [[2, 4, 58, 83], [24, 80]]],      // [1,1]
+            ['crouch-2', [[213, 314, 55, 59], [21, 54]]],  // [4,4]
+            ['crouch-3', [[549, 28, 49, 59], [21, 53]]],   // [1,10]
         ]);
 
         // define Yusuke's animations
+        // takes the form:
+        // ['name of state']: [
+        //      ['name of frame', frameDelay], ..., 
+        //      ['name of frame', frameDelay],
+        // ]
         this.animations = {
             [FIGHTER_STATE.IDLE]: [
                 ['idle-1', 85], ['idle-1', 85], ['idle-2', 85], 
@@ -66,12 +76,19 @@ export class Yusuke extends Fighter {
             [FIGHTER_STATE.JUMP_FORWARD]: [
                 ['jump-roll-1', 200], ['jump-roll-2', 100], ['jump-roll-3', 100], 
                 ['jump-roll-4', 100], ['jump-roll-5', 100], ['jump-roll-8', 100],
-                ['jump-roll-8', -1],
+                ['jump-roll-8', 0],
             ],
             [FIGHTER_STATE.JUMP_BACKWARD]: [
                 ['jump-roll-1', 200], ['jump-roll-2', 100], ['jump-roll-3', 100], 
                 ['jump-roll-6', 100], ['jump-roll-7', 100], ['jump-roll-8', 100],
-                ['jump-roll-8', -1],
+                ['jump-roll-8', 0],
+            ],
+            [FIGHTER_STATE.CROUCH]: [['crouch-3', 0]],
+            [FIGHTER_STATE.CROUCH_DOWN]: [
+                ['crouch-1', 50], ['crouch-2', 50], ['crouch-3', 50], ['crouch-3', -2],
+            ],
+            [FIGHTER_STATE.CROUCH_UP]: [
+                ['crouch-3', 50], ['crouch-2', 50], ['crouch-1', 50], ['crouch-1', -2],
             ],
         };
 
