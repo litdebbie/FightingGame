@@ -4,14 +4,15 @@ import { Stage } from './entities/Stage.js';
 import { FpsCounter } from './entities/FpsCounter.js';
 import { STAGE_FLOOR } from './constants/stage.js';
 import { FIGHTER_DIRECTION } from './constants/fighters.js';
+import { registerKeyboardEvents } from './InputHandler.js';
 
 export class BattleBrosGame {
     constructor() {
         this.c = this.getContext();
         // create fighters
         this.fighters = [
-            new Hiei(70, STAGE_FLOOR, FIGHTER_DIRECTION.RIGHT),
-            new Yusuke(310, STAGE_FLOOR, FIGHTER_DIRECTION.LEFT),
+            new Hiei(70, STAGE_FLOOR, FIGHTER_DIRECTION.RIGHT, 0),
+            new Yusuke(310, STAGE_FLOOR, FIGHTER_DIRECTION.LEFT, 1),
         ];
         
         // declare all game entities (Fighter object(s) and Stage object)
@@ -68,6 +69,8 @@ export class BattleBrosGame {
     }
 
     start() {
+        registerKeyboardEvents();
+
         // sechedules the first call to frame()
         // frame() will then schedule the next frame, which schedules the next frame, and so on
         // -> results in game loop 

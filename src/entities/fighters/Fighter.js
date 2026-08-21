@@ -1,9 +1,11 @@
 import { FIGHTER_STATE } from '../../constants/fighters.js';
 import { STAGE_FLOOR } from '../../constants/stage.js'
+import * as control from '../../InputHandler.js';
 
 export class Fighter {
-    constructor(name, x, y, direction) {
+    constructor(name, x, y, direction, playerId) {
         this.name = name;           // name of character
+        this.playerId = playerId;   // character player id (P1 or P2)
         this.position = { x, y };   // character position
         this.velocity = { x: 0, y: 0 }; // character velocity
         this.initialVelocity ={}        // character initial velocity
@@ -25,7 +27,7 @@ export class Fighter {
         this.states = {
             [FIGHTER_STATE.IDLE]: {
                 init: this.handleIdleInit.bind(this),
-                update: () => { },
+                update: this.handleIdleState.bind(this),
                 validFrom: [
                     undefined,
                     FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_FORWARD, FIGHTER_STATE.WALK_BACKWARD, 
@@ -35,12 +37,12 @@ export class Fighter {
             },
             [FIGHTER_STATE.WALK_FORWARD]: {
                 init: this.handleMoveInit.bind(this),
-                update: () => { },
+                update: this.handleWalkForwardState.bind(this),
                 validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_BACKWARD],
             },
             [FIGHTER_STATE.WALK_BACKWARD]: {
                 init: this.handleMoveInit.bind(this),
-                update: () => { },
+                update: this.handleWalkBackwardState.bind(this),
                 validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_FORWARD],
             },
             [FIGHTER_STATE.JUMP_UP]: {
@@ -100,6 +102,15 @@ export class Fighter {
         this.velocity.y = 0;
     }
 
+    // called every frame while the fighter is in the idle state
+    handleIdleState() {
+        // check if "left" key is pressed -> if it is, move fighter backward
+        if(control.isBackward(this.playerId, this.direction)) this.changeState(FIGHTER_STATE.WALK_BACKWARD);
+
+        // check if "right" key is pressed -> if it is, move fighter forward
+        if(control.isForward(this.playerId, this.direction)) this.changeState(FIGHTER_STATE.WALK_FORWARD);
+    }
+
     // ---------------------------------------------------
     // WALKING STATES
     // ---------------------------------------------------
@@ -111,9 +122,16 @@ export class Fighter {
         this.velocity.x = this.initialVelocity.x[this.currentState] ?? 0;
     }
 
-    // called every frame while the fighter is moving
-    handleMoveState() {
+    // called every frame while the fighter is walking forward
+    handleWalkForwardState() {
+        // check if "right" key is released -> if it is, change fighter to idle state
+        if(!control.isForward(this.playerId, this.direction)) this.changeState(FIGHTER_STATE.IDLE);
+    }
 
+    // called every frame while the fighter is walking backward
+    handleWalkBackwardState() {
+        // check if "left" key is released -> if it is, change fighter to idle state
+        if(!control.isBackward(this.playerId, this.direction)) this.changeState(FIGHTER_STATE.IDLE);
     }
 
     // ---------------------------------------------------

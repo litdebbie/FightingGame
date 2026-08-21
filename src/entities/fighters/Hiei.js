@@ -2,8 +2,8 @@ import { FIGHTER_STATE } from '../../constants/fighters.js';
 import { Fighter } from './Fighter.js';
 
 export class Hiei extends Fighter {
-    constructor(x, y, direction) {
-        super('Hiei', x, y, direction);  // call parent class constructor
+    constructor(x, y, direction, playerId) {
+        super('Hiei', x, y, direction, playerId);  // call parent class constructor
 
         this.image = document.querySelector('img[alt="hiei"]');     // set image to the Hiei sprite sheet
 

@@ -2,8 +2,8 @@ import { FIGHTER_STATE } from '../../constants/fighters.js';
 import { Fighter } from './Fighter.js';
 
 export class Yusuke extends Fighter {
-    constructor(x, y, direction) {
-        super('Yusuke', x, y, direction);    // call parent class constructor
+    constructor(x, y, direction, playerId) {
+        super('Yusuke', x, y, direction, playerId);    // call parent class constructor
 
         this.image = document.querySelector('img[alt="yusuke"]');   // set image to the Yusuke sprite sheet 
 
