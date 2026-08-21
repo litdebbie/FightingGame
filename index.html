@@ -14,9 +14,6 @@
 
         body {
             display: flex;
-            flex-direction: column;
-            --form-height: 4rem;
-            --form-content-size: 1rem;
         }
         
         body,
@@ -34,52 +31,11 @@
         img {
             display: none;
         }
-
-        form {
-            display: flex;
-            flex-wrap: wrap;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
-            gap: var(--form-content-size);
-        }
-
-        form *{
-            font-size: var(--form-content-size);
-        }
-
-        input[type="checkbox"] {
-            width: var(--form-content-size);
-            height: var(--form-content-size);
-        }
-
-        main {
-            display: flex;
-            height: calc(100% - var(--form-height));
-        }
-
-        label {
-            color: white;
-        }
     </style>
     <script type="module" src="./src/index.js"></script>
 </head>
 <body>
-    <form>
-        <div>
-            <input id="hiei" type="checkbox" name="fighter" value="Hiei"/>
-            <label for="hiei">Hiei</label>
-        </div>
-        <div>
-            <input id="yusuke" type="checkbox" name="fighter" value="Yusuke"/>
-            <label for="yusuke">Yusuke</label>
-        </div>
-        <select id="state-dropdown" name="state"></select>
-        <button type="submit">Transition!</button>
-    </form>
-    <main>
-        <canvas width="384" height="224"></canvas>
-    </main>
+    <canvas width="384" height="224"></canvas>
     <img src="./images/hiei.png" alt="hiei"/>
     <img src="./images/background.gif" alt="background"/>
     <img src="./images/yusuke.png" alt="yusuke"

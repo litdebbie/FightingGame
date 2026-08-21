@@ -67,27 +67,7 @@ export class BattleBrosGame {
         this.draw();
     }
 
-    // handle the form used to change the fighter states
-    handleFormSubmit(event) {
-        event.preventDefault();     // prevent normal behavior of browser reloading and have our JavaScript handle the form submission
-
-        // find all checked inputs inside the submitted form and store as array
-        const selectedCheckboxes = Array
-        .from(event.target.querySelectorAll('input:checked'))
-        .map(checkbox => checkbox.value);
-
-        const options = event.target.querySelector('select');   // find the <select> element in the submitted form
-
-        // loop through every fighter in our fighters array
-        this.fighters.forEach(fighter => {
-            // check if fighter's name is selected -> change the selected fighter's state
-            if(selectedCheckboxes.includes(fighter.name)) fighter.changeState(options.value);
-        });
-    }
-
     start() {
-        document.addEventListener('submit', this.handleFormSubmit.bind(this));     // handles form submissions
-    
         // sechedules the first call to frame()
         // frame() will then schedule the next frame, which schedules the next frame, and so on
         // -> results in game loop 

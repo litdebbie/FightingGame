@@ -96,10 +96,10 @@ export class Yusuke extends Fighter {
         // canvas y coordinates increase downward
         this.initialVelocity = {
             x: {
-                [FIGHTER_STATE.WALK_FORWARD]: 100,
-                [FIGHTER_STATE.WALK_BACKWARD]: -100,
-                [FIGHTER_STATE.JUMP_FORWARD]: 100,
-                [FIGHTER_STATE.JUMP_BACKWARD]: -100,
+                [FIGHTER_STATE.WALK_FORWARD]: 120,
+                [FIGHTER_STATE.WALK_BACKWARD]: -120,
+                [FIGHTER_STATE.JUMP_FORWARD]: 120,
+                [FIGHTER_STATE.JUMP_BACKWARD]: -120,
             },
             jump: -450,
         };
