@@ -62,11 +62,11 @@ export class Fighter {
             },
             [FIGHTER_STATE.CROUCH]: {
                 init: () => { },
-                update: () => { },
+                update: this.handleCrouchState.bind(this),
                 validFrom: [FIGHTER_STATE.CROUCH_DOWN],
             },
             [FIGHTER_STATE.CROUCH_DOWN]: {
-                init: () => { },
+                init: this.handleCrouchDownInit.bind(this),
                 update: this.handleCrouchDownState.bind(this),
                 validFrom: [FIGHTER_STATE.IDLE, FIGHTER_STATE.WALK_FORWARD, FIGHTER_STATE.WALK_BACKWARD],
             },
@@ -104,6 +104,12 @@ export class Fighter {
 
     // called every frame while the fighter is in the idle state
     handleIdleState() {
+        // check if "up" key is pressed -> if it is, fighter jumps up
+        if(control.isUp(this.playerId)) this.changeState(FIGHTER_STATE.JUMP_UP);
+
+        // check if "down" key is pressed -> if it is, fighter crouches down
+        if(control.isDown(this.playerId)) this.changeState(FIGHTER_STATE.CROUCH_DOWN);
+
         // check if "left" key is pressed -> if it is, move fighter backward
         if(control.isBackward(this.playerId, this.direction)) this.changeState(FIGHTER_STATE.WALK_BACKWARD);
 
@@ -126,12 +132,24 @@ export class Fighter {
     handleWalkForwardState() {
         // check if "right" key is released -> if it is, change fighter to idle state
         if(!control.isForward(this.playerId, this.direction)) this.changeState(FIGHTER_STATE.IDLE);
+
+        // check if "up" key is pressed -> if it is, fighter jumps forward
+        if(control.isUp(this.playerId)) this.changeState(FIGHTER_STATE.JUMP_FORWARD);
+
+        // check if "down" key is pressed -> if it is, fighter crouches down
+        if(control.isDown(this.playerId)) this.changeState(FIGHTER_STATE.CROUCH_DOWN);
     }
 
     // called every frame while the fighter is walking backward
     handleWalkBackwardState() {
         // check if "left" key is released -> if it is, change fighter to idle state
         if(!control.isBackward(this.playerId, this.direction)) this.changeState(FIGHTER_STATE.IDLE);
+
+        // check if "up" key is pressed -> if it is, fighter jumps backward
+        if(control.isUp(this.playerId)) this.changeState(FIGHTER_STATE.JUMP_BACKWARD);
+
+        // check if "down" key is pressed -> if it is, fighter crouches down
+        if(control.isDown(this.playerId)) this.changeState(FIGHTER_STATE.CROUCH_DOWN);
     }
 
     // ---------------------------------------------------
@@ -159,12 +177,30 @@ export class Fighter {
     // CROUCHING STATES
     // ---------------------------------------------------
 
+    // called once when fighter enters CROUCH_DOWN state
+    handleCrouchDownInit() {
+        this.handleIdleInit();  // set horizontal and vertical velocities to 0 
+    }
+
+    // called once when fighter enters CROUCH_UP state
+    handleCrouchUpInit() {
+        
+    }
+
+    // called every frame while the fighter is crouching
+    handleCrouchState() {
+        // check if "down" key is released -> if it is, change fighter to idle state
+        if(!control.isDown(this.playerId)) this.changeState(FIGHTER_STATE.CROUCH_UP);
+    }
+
+    // called every frame while the fighter is crouching down
     handleCrouchDownState() {
         // once the animation has reached its final frame (frameDelay = -2)
         // transition state: CROUCH_DOWN -> CROUCH
         if(this.animations[this.currentState][this.animationFrame][1] === -2) this.changeState(FIGHTER_STATE.CROUCH);
     }
 
+    // called every frame while the fighter is crouching up
     handleCrouchUpState() {
         // once the animation has reached its final frame (frameDelay = -2)
         // transition state: CROUCH_UP -> IDLE
